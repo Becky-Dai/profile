@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beamy Studio — 把你的想法變成真的</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --purple-dark:  #4338CA;
+  --purple-mid:   #818CF8;
+  --purple-light: #EEF2FF;
+  --green-dark:   #0F766E;
+  --green-mid:    #14B8A6;
+  --green-light:  #F0FDFA;
+  --pink-dark:    #9D174D;
+  --pink-mid:     #F472B6;
+  --pink-light:   #FDF4FF;
+  --bg:           #F7F5F0;
+  --text:         #18181B;
+  --white:        #FFFFFF;
+  --font-en:   'Plus Jakarta Sans', sans-serif;
+  --font-zh:   'Noto Sans TC', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-zh); background: var(--bg); color: var(--text); overflow-x: hidden; cursor: none; }
+
+/* Cursor */
+#cursor {
+  position: fixed; width: 10px; height: 10px;
+  background: var(--purple-dark); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+}
+#cursor-ring {
+  position: fixed; width: 36px; height: 36px;
+  border: 1.5px solid var(--purple-mid); border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%);
+  opacity: 0.6;
+}
+
+/* Nav */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 48px;
+  background: rgba(241,239,232,.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(67,56,202,.07);
+}
+.nav-logo {
+  font-family: var(--font-en); font-weight: 800; font-size: 1.25rem;
+  color: var(--purple-dark); letter-spacing: -.5px; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-logo-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-mid); display: inline-block; }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  font-family: var(--font-en); font-size: .875rem; font-weight: 500;
+  color: var(--text); text-decoration: none; opacity: .65;
+  transition: opacity .2s, color .2s;
+}
+.nav-links a:hover { opacity: 1; color: var(--purple-dark); }
+.nav-cta {
+  background: var(--purple-dark); color: var(--white) !important;
+  padding: 8px 22px; border-radius: 40px; opacity: 1 !important;
+  transition: background .2s !important;
+}
+.nav-cta:hover { background: var(--pink-dark) !important; }
+
+/* Section */
+section { padding: 100px 48px; max-width: 1200px; margin: 0 auto; }
+.section-label {
+  font-family: var(--font-mono); font-size: .72rem; font-weight: 500;
+  letter-spacing: .14em; color: var(--purple-dark); text-transform: uppercase;
+  margin-bottom: 10px; opacity: .75;
+}
+.section-title {
+  font-family: var(--font-en); font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800; line-height: 1.12; margin-bottom: 14px;
+}
+.section-sub { font-size: .94rem; opacity: .6; max-width: 460px; line-height: 1.75; }
+
+/* Divider */
+.section-divider { width: 100%; max-width: 1200px; margin: 0 auto; border: none; border-top: 1px solid rgba(67,56,202,.09); }
+
+/* Hero */
+#hero { min-height: 100vh; padding-top: 80px; max-width: 100%; display: flex; align-items: center; }
+.hero-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 48px;
+  display: flex; align-items: center; justify-content: space-between; gap: 48px; width: 100%;
+}
+.hero-text { flex: 1; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--purple-light); color: var(--purple-dark);
+  font-family: var(--font-mono); font-size: .75rem;
+  padding: 6px 14px; border-radius: 40px; margin-bottom: 26px;
+}
+.badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-mid); }
+h1 {
+  font-family: var(--font-en); font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 800; line-height: 1.05; letter-spacing: -2px;
+  color: var(--text); margin-bottom: 20px;
+}
+h1 .accent { color: var(--purple-dark); }
+.typing-wrap {
+  font-family: var(--font-en); font-size: clamp(1rem, 2.2vw, 1.35rem);
+  font-weight: 600; color: var(--green-dark);
+  margin-bottom: 36px; display: flex; align-items: center; gap: 4px;
+}
+#typing-text { border-right: 2.5px solid var(--green-dark); padding-right: 2px; animation: blink .65s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--purple-dark); color: var(--white);
+  font-family: var(--font-en); font-weight: 700; font-size: .9rem;
+  padding: 13px 30px; border-radius: 40px; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: background .2s, transform .15s;
+}
+.btn-primary:hover { background: var(--pink-dark); transform: translateY(-2px); }
+.btn-outline {
+  border: 2px solid var(--purple-dark); color: var(--purple-dark);
+  font-family: var(--font-en); font-weight: 700; font-size: .9rem;
+  padding: 11px 26px; border-radius: 40px; text-decoration: none;
+  transition: background .2s, color .2s, transform .15s;
+}
+.btn-outline:hover { background: var(--purple-dark); color: var(--white); transform: translateY(-2px); }
+
+/* Hero illustration */
+.hero-illustration {
+  flex: 0 0 460px;
+  background: linear-gradient(140deg, var(--purple-light) 0%, var(--green-light) 100%);
+  border-radius: 28px; overflow: hidden; position: relative;
+}
+.hero-illustration svg { display: block; width: 100%; height: auto; }
+
+/* About */
+#about { padding-top: 60px; }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
+.about-card {
+  background: var(--white); border-radius: 24px; padding: 36px;
+  border: 2px solid transparent; position: relative; overflow: hidden;
+  transition: border-color .25s, transform .25s, box-shadow .25s;
+}
+.about-card::before { content:''; position: absolute; top:0; left:0; right:0; height: 4px; }
+.about-card.becky::before { background: linear-gradient(90deg, var(--green-dark), var(--green-mid)); }
+.about-card.amy::before   { background: linear-gradient(90deg, var(--purple-dark), var(--purple-mid)); }
+.about-card:hover { transform: translateY(-4px); box-shadow: 0 20px 56px rgba(67,56,202,.12); }
+.about-card.becky:hover { border-color: var(--green-mid); }
+.about-card.amy:hover   { border-color: var(--purple-mid); }
+.about-icon { width: 52px; height: 52px; margin-bottom: 18px; }
+.about-name { font-family: var(--font-en); font-weight: 800; font-size: 1.6rem; margin-bottom: 3px; }
+.about-card.becky .about-name { color: var(--green-dark); }
+.about-card.amy   .about-name { color: var(--purple-dark); }
+.about-role { font-family: var(--font-mono); font-size: .72rem; color: var(--text); opacity: .45; margin-bottom: 14px; }
+.about-quote { font-size: .92rem; line-height: 1.75; opacity: .7; margin-bottom: 22px; }
+.chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip {
+  font-family: var(--font-mono); font-size: .7rem; font-weight: 500;
+  padding: 4px 11px; border-radius: 40px; border: 1.5px solid;
+}
+.chip-purple { color: var(--purple-dark); border-color: var(--purple-mid); background: var(--purple-light); }
+.chip-green  { color: var(--green-dark);  border-color: var(--green-mid);  background: var(--green-light); }
+
+/* Services */
+.services-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin-top: 48px; }
+.service-card {
+  background: var(--white); border-radius: 22px; padding: 30px 26px;
+  border: 2px solid transparent;
+  transition: border-color .25s, transform .25s, box-shadow .25s;
+}
+.service-card:hover { transform: translateY(-4px); box-shadow: 0 16px 44px rgba(67,56,202,.1); border-color: var(--purple-mid); }
+.service-icon {
+  width: 50px; height: 50px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 18px;
+}
+.si-purple { background: var(--purple-light); color: var(--purple-dark); }
+.si-green  { background: var(--green-light);  color: var(--green-dark); }
+.si-pink   { background: var(--pink-light);   color: var(--pink-dark); }
+.service-title { font-family: var(--font-en); font-weight: 700; font-size: 1rem; margin-bottom: 5px; }
+.service-tagline { font-family: var(--font-mono); font-size: .7rem; color: var(--purple-dark); opacity: .65; margin-bottom: 9px; }
+.service-desc { font-size: .86rem; opacity: .62; line-height: 1.65; }
+
+/* Works */
+.works-filters { display: flex; gap: 10px; flex-wrap: wrap; margin: 32px 0 28px; }
+.filter-btn {
+  font-family: var(--font-mono); font-size: .72rem; font-weight: 500;
+  padding: 6px 16px; border-radius: 40px;
+  border: 1.5px solid var(--purple-mid); background: transparent;
+  color: var(--purple-dark); cursor: pointer; transition: background .2s, color .2s;
+}
+.filter-btn.active, .filter-btn:hover { background: var(--purple-dark); color: var(--white); border-color: var(--purple-dark); }
+.works-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+.work-card { border-radius: 20px; overflow: hidden; position: relative; aspect-ratio: 4/3; cursor: pointer; }
+.work-card-bg {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .4s;
+}
+.work-card:hover .work-card-bg { transform: scale(1.05); }
+.work-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(24,24,27,.82) 0%, transparent 60%);
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end;
+  padding: 22px; opacity: 0; transition: opacity .3s;
+}
+.work-card:hover .work-overlay { opacity: 1; }
+.work-title { font-family: var(--font-en); font-weight: 700; font-size: 1rem; color: var(--white); margin-bottom: 7px; }
+.work-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.wip-badge {
+  position: absolute; top: 12px; right: 12px;
+  background: rgba(24,24,27,.55);
+  backdrop-filter: blur(6px);
+  color: rgba(255,255,255,.85);
+  font-family: var(--font-mono); font-size: .6rem; font-weight: 500;
+  letter-spacing: .06em;
+  padding: 4px 10px; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.15);
+  z-index: 2; pointer-events: none;
+}
+.work-tag {
+  font-family: var(--font-mono); font-size: .63rem;
+  padding: 2px 9px; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.35); color: var(--white);
+}
+
+/* Tech */
+.tech-categories { margin-top: 48px; }
+.tech-cat { margin-bottom: 28px; }
+.tech-cat-label {
+  font-family: var(--font-mono); font-size: .7rem; font-weight: 500;
+  letter-spacing: .1em; color: var(--text); opacity: .4;
+  text-transform: uppercase; margin-bottom: 11px;
+}
+.tech-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tech-tag {
+  font-family: var(--font-mono); font-size: .76rem; font-weight: 500;
+  padding: 5px 15px; border-radius: 40px; border: 1.5px solid;
+  cursor: default; position: relative; transition: transform .15s;
+  user-select: none;
+}
+.tech-tag:hover { transform: translateY(-2px); }
+.tt-purple { color: var(--purple-dark); border-color: var(--purple-mid); background: var(--purple-light); }
+.tt-green  { color: var(--green-dark);  border-color: var(--green-mid);  background: var(--green-light); }
+.tt-pink   { color: var(--pink-dark);   border-color: var(--pink-mid);   background: var(--pink-light); }
+.star-particle {
+  position: absolute; pointer-events: none; font-size: .75rem;
+  animation: starFloat .55s ease-out forwards;
+}
+@keyframes starFloat {
+  0%   { opacity:1; transform:translate(0,0) scale(1); }
+  100% { opacity:0; transform:translate(var(--sx),var(--sy)) scale(.2); }
+}
+
+/* Contact */
+#contact { padding-bottom: 120px; }
+.contact-inner {
+  background: var(--white); border-radius: 24px; padding: 56px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center;
+  margin-top: 48px;
+}
+.contact-left h3 { font-family: var(--font-en); font-weight: 800; font-size: 1.75rem; margin-bottom: 12px; line-height: 1.3; }
+.contact-left p { font-size: .9rem; opacity: .62; line-height: 1.8; margin-bottom: 28px; }
+.contact-illo { display: flex; justify-content: center; }
+.contact-form { display: flex; flex-direction: column; gap: 15px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group label { font-family: var(--font-mono); font-size: .68rem; font-weight: 500; color: var(--text); opacity: .55; letter-spacing: .06em; }
+.form-group input, .form-group textarea {
+  background: var(--bg); border: 1.5px solid rgba(67,56,202,.14);
+  border-radius: 10px; padding: 11px 14px;
+  font-family: var(--font-zh); font-size: .9rem; color: var(--text);
+  outline: none; resize: none; transition: border-color .2s;
+}
+.form-group input:focus, .form-group textarea:focus { border-color: var(--purple-mid); }
+.form-group textarea { height: 110px; }
+.btn-submit {
+  background: var(--purple-dark); color: var(--white);
+  font-family: var(--font-en); font-weight: 700; font-size: .92rem;
+  padding: 13px; border-radius: 40px; border: none; cursor: pointer;
+  transition: background .2s, transform .15s; margin-top: 4px;
+}
+.btn-submit:hover { background: var(--pink-dark); transform: translateY(-2px); }
+
+/* Footer */
+footer {
+  background: var(--text); color: var(--white); padding: 36px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-logo { font-family: var(--font-en); font-weight: 800; font-size: 1.15rem; cursor: pointer; }
+.footer-logo span { color: var(--green-mid); }
+.footer-copy { font-size: .78rem; opacity: .4; }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { color: rgba(255,255,255,.45); text-decoration: none; font-size: .8rem; transition: color .2s; }
+.footer-links a:hover { color: var(--white); }
+
+/* Easter egg */
+.easter-egg-overlay {
+  position: fixed; inset: 0; background: rgba(67,56,202,.96);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 9000; opacity: 0; pointer-events: none; transition: opacity .35s;
+}
+.easter-egg-overlay.active { opacity: 1; pointer-events: all; }
+.egg-title { font-family: var(--font-en); font-weight: 800; font-size: 2.8rem; color: var(--white); text-align: center; }
+.egg-sub { color: var(--purple-light); margin-top: 10px; font-size: 1rem; }
+.egg-anim { margin-bottom: 24px; }
+.close-egg {
+  margin-top: 28px; background: var(--white); color: var(--purple-dark);
+  font-family: var(--font-en); font-weight: 700; padding: 11px 30px;
+  border-radius: 40px; border: none; cursor: pointer; font-size: .95rem;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .hero-inner { flex-direction: column; }
+  .hero-illustration { flex: none; width: 100%; }
+  .about-grid, .services-grid, .works-grid { grid-template-columns: 1fr 1fr; }
+  .contact-inner { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  nav { padding: 14px 20px; }
+  .nav-links { display: none; }
+  section { padding: 60px 20px; }
+  .about-grid, .services-grid, .works-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 14px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- Easter egg -->
+<div class="easter-egg-overlay" id="easterEgg">
+  <div class="egg-anim">
+    <svg id="eggStar" width="64" height="64" viewBox="0 0 64 64" fill="none">
+      <path d="M32 4 L36 26 L58 28 L42 44 L48 66 L32 54 L16 66 L22 44 L6 28 L28 26 Z" fill="#818CF8"/>
+    </svg>
+  </div>
+  <div class="egg-title">你找到彩蛋了！</div>
+  <div class="egg-sub">Becky & Amy 說謝謝你的愛 🫶</div>
+  <button class="close-egg" onclick="closeEgg()">關掉啦</button>
+</div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-logo" id="navLogo">Beamy<span class="nav-logo-dot"></span></div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#works">Works</a></li>
+    <li><a href="#tech">Tech</a></li>
+    <li><a href="#contact" class="nav-cta">聯絡我們</a></li>
+  </ul>
+</nav>
+
+<!-- ── 01 Hero ── -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-badge"><span class="badge-dot"></span>全端雙人組 · 中文溝通，英文交付</div>
+      <h1>Beamy<br><span class="accent">Studio</span></h1>
+      <div class="typing-wrap">我們把你的想法，<span id="typing-text"></span></div>
+      <div class="hero-btns">
+        <a href="#contact" class="btn-primary">來跟我們聊聊 →</a>
+        <a href="#works" class="btn-outline">看作品集</a>
+      </div>
+    </div>
+
+    <!-- Hero illustration: two character SVGs -->
+    <div class="hero-illustration">
+      <svg viewBox="0 0 460 360" xmlns="http://www.w3.org/2000/svg" aria-label="Becky 和 Amy 的插圖">
+
+        <!-- Floating deco: top-left card -->
+        <rect x="14" y="18" width="56" height="40" rx="10" fill="white" opacity=".7"/>
+        <rect x="20" y="26" width="24" height="3" rx="1.5" fill="#4338CA" opacity=".5"/>
+        <rect x="20" y="32" width="36" height="3" rx="1.5" fill="#818CF8" opacity=".5"/>
+        <rect x="20" y="38" width="18" height="3" rx="1.5" fill="#14B8A6" opacity=".5"/>
+
+        <!-- Floating deco: top-right sparkle -->
+        <path d="M400 32 L402.5 22 L405 32 L415 34.5 L405 37 L402.5 47 L400 37 L390 34.5 Z" fill="#818CF8" opacity=".65"/>
+
+        <!-- Floating deco: code snippet bottom-right -->
+        <rect x="370" y="280" width="72" height="52" rx="10" fill="white" opacity=".65"/>
+        <rect x="378" y="291" width="14" height="3" rx="1.5" fill="#14B8A6" opacity=".8"/>
+        <rect x="382" y="298" width="28" height="3" rx="1.5" fill="#818CF8" opacity=".8"/>
+        <rect x="378" y="305" width="20" height="3" rx="1.5" fill="#F472B6" opacity=".8"/>
+        <rect x="382" y="312" width="32" height="3" rx="1.5" fill="#4338CA" opacity=".6"/>
+
+        <!-- Floating circle bottom-left -->
+        <circle cx="28" cy="290" r="10" fill="#F472B6" opacity=".35"/>
+        <circle cx="44" cy="308" r="6"  fill="#818CF8"  opacity=".3"/>
+
+        <!-- ── BECKY (backend, green, glasses + laptop) centered ~x=125 ── -->
+        <g id="charBecky">
+          <!-- Hair back (longer, dark) -->
+          <ellipse cx="125" cy="108" rx="52" ry="60" fill="#18181B"/>
+          <!-- Face -->
+          <ellipse cx="125" cy="120" rx="44" ry="42" fill="#FDDCB5"/>
+          <!-- Hair top -->
+          <path d="M73 94 Q125 50 177 94 Q170 70 125 64 Q80 70 73 94Z" fill="#18181B"/>
+          <!-- Long side hair -->
+          <rect x="65"  y="108" width="14" height="76" rx="7" fill="#18181B"/>
+          <rect x="162" y="108" width="14" height="76" rx="7" fill="#18181B"/>
+          <!-- Eyes (behind glasses) -->
+          <circle cx="112" cy="122" r="7" fill="#18181B"/>
+          <circle cx="138" cy="122" r="7" fill="#18181B"/>
+          <circle cx="114" cy="119" r="3" fill="white"/>
+          <circle cx="140" cy="119" r="3" fill="white"/>
+          <!-- Glasses left lens -->
+          <rect x="99"  y="111" width="24" height="18" rx="8" stroke="#14B8A6" stroke-width="2.5" fill="rgba(20,184,166,.1)"/>
+          <!-- Glasses right lens -->
+          <rect x="125" y="111" width="24" height="18" rx="8" stroke="#14B8A6" stroke-width="2.5" fill="rgba(20,184,166,.1)"/>
+          <!-- Bridge -->
+          <line x1="123" y1="120" x2="125" y2="120" stroke="#14B8A6" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Temples -->
+          <line x1="99"  y1="120" x2="93"  y2="118" stroke="#14B8A6" stroke-width="2" stroke-linecap="round"/>
+          <line x1="149" y1="120" x2="155" y2="118" stroke="#14B8A6" stroke-width="2" stroke-linecap="round"/>
+          <!-- Blush -->
+          <ellipse cx="99"  cy="132" rx="9" ry="5.5" fill="#F472B6" opacity=".5"/>
+          <ellipse cx="151" cy="132" rx="9" ry="5.5" fill="#F472B6" opacity=".5"/>
+          <!-- Smile -->
+          <path d="M110 140 Q125 150 140 140" stroke="#9D174D" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <!-- Neck -->
+          <rect x="114" y="160" width="22" height="14" rx="7" fill="#FDDCB5"/>
+          <!-- Body -->
+          <rect x="75" y="172" width="100" height="112" rx="22" fill="#0F766E"/>
+          <!-- V-collar -->
+          <path d="M100 172 L125 192 L150 172" fill="none" stroke="#F0FDFA" stroke-width="3" stroke-linejoin="round"/>
+          <!-- Left arm -->
+          <rect x="55"  y="178" width="24" height="68" rx="12" fill="#0F766E"/>
+          <!-- Right arm -->
+          <rect x="171" y="178" width="24" height="62" rx="12" fill="#0F766E"/>
+          <!-- Laptop lid -->
+          <rect x="54"  y="210" width="116" height="38" rx="8" fill="#1C1C1E"/>
+          <rect x="58"  y="214" width="108" height="30" rx="5" fill="#0D1117"/>
+          <!-- Code on screen -->
+          <rect x="64"  y="220" width="42" height="3"  rx="1.5" fill="#14B8A6"  opacity=".9"/>
+          <rect x="68"  y="227" width="62" height="3"  rx="1.5" fill="#818CF8"  opacity=".9"/>
+          <rect x="64"  y="234" width="30" height="3"  rx="1.5" fill="#F472B6"  opacity=".9"/>
+          <!-- Laptop base -->
+          <rect x="48"  y="248" width="130" height="7" rx="3.5" fill="#14B8A6" opacity=".55"/>
+          <!-- Left fist -->
+          <circle cx="67"  cy="246" r="11" fill="#FDDCB5"/>
+          <!-- Right fist -->
+          <circle cx="183" cy="240" r="11" fill="#FDDCB5"/>
+          <!-- Name tag -->
+          <rect x="88" y="338" width="74" height="22" rx="11" fill="#0F766E" opacity=".15"/>
+          <text x="125" y="353" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-weight="700" font-size="11" fill="#0F766E">Becky</text>
+        </g>
+
+        <!-- ── AMY (frontend/design, purple, tablet + stylus) centered ~x=330 ── -->
+        <g id="charAmy">
+          <!-- Hair back (shorter, warm brown) -->
+          <ellipse cx="330" cy="112" rx="52" ry="55" fill="#3D2519"/>
+          <!-- Face -->
+          <ellipse cx="330" cy="120" rx="44" ry="42" fill="#FDDCB5"/>
+          <!-- Bangs -->
+          <path d="M278 100 Q330 56 382 100 Q375 76 330 70 Q285 76 278 100Z" fill="#3D2519"/>
+          <!-- Side hair -->
+          <rect x="270" y="108" width="14" height="46" rx="7" fill="#3D2519"/>
+          <rect x="367" y="108" width="14" height="46" rx="7" fill="#3D2519"/>
+          <!-- Eyes -->
+          <circle cx="317" cy="122" r="7" fill="#18181B"/>
+          <circle cx="343" cy="122" r="7" fill="#18181B"/>
+          <circle cx="319" cy="119" r="3" fill="white"/>
+          <circle cx="345" cy="119" r="3" fill="white"/>
+          <!-- Blush -->
+          <ellipse cx="304" cy="132" rx="9" ry="5.5" fill="#F472B6" opacity=".5"/>
+          <ellipse cx="356" cy="132" rx="9" ry="5.5" fill="#F472B6" opacity=".5"/>
+          <!-- Smile -->
+          <path d="M315 140 Q330 150 345 140" stroke="#9D174D" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <!-- Neck -->
+          <rect x="319" y="160" width="22" height="14" rx="7" fill="#FDDCB5"/>
+          <!-- Body -->
+          <rect x="280" y="172" width="100" height="112" rx="22" fill="#4338CA"/>
+          <!-- V-collar -->
+          <path d="M305 172 L330 192 L355 172" fill="none" stroke="#EEF2FF" stroke-width="3" stroke-linejoin="round"/>
+          <!-- Left arm -->
+          <rect x="260" y="178" width="24" height="68" rx="12" fill="#4338CA"/>
+          <!-- Right arm -->
+          <rect x="376" y="178" width="24" height="62" rx="12" fill="#4338CA"/>
+          <!-- Tablet (right side) -->
+          <rect x="382" y="206" width="50" height="36" rx="8" fill="#EEF2FF"/>
+          <rect x="386" y="210" width="42" height="28" rx="5" fill="#C7D2FE"/>
+          <!-- UI on tablet -->
+          <rect x="390" y="215" width="22" height="3"  rx="1.5" fill="#4338CA" opacity=".7"/>
+          <rect x="390" y="222" width="14" height="3"  rx="1.5" fill="#818CF8" opacity=".7"/>
+          <rect x="408" y="215" width="16" height="14" rx="4"   fill="#F472B6" opacity=".55"/>
+          <!-- Stylus -->
+          <line x1="428" y1="200" x2="440" y2="186" stroke="#4338CA" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="441" cy="185" r="4" fill="#9D174D"/>
+          <!-- Left fist -->
+          <circle cx="272" cy="246" r="11" fill="#FDDCB5"/>
+          <!-- Right fist -->
+          <circle cx="388" cy="240" r="11" fill="#FDDCB5"/>
+          <!-- Name tag -->
+          <rect x="293" y="338" width="74" height="22" rx="11" fill="#4338CA" opacity=".18"/>
+          <text x="330" y="353" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-weight="700" font-size="11" fill="#4338CA">Amy</text>
+        </g>
+
+        <!-- Center sparkle between chars -->
+        <path d="M228 78 L230 70 L232 78 L240 80 L232 82 L230 90 L228 82 L220 80 Z" fill="#14B8A6" opacity=".6"/>
+        <circle cx="228" cy="200" r="5" fill="#F472B6" opacity=".4"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ── 02 About ── -->
+<section id="about">
+  <div class="section-label">— Who we are</div>
+  <h2 class="section-title">設計 + 工程，<br>一組搞定。</h2>
+  <p class="section-sub">不用跟設計師講完再跟工程師講一次。我們兩個就是那條橋。</p>
+  <div class="about-grid">
+
+    <div class="about-card becky">
+      <!-- Terminal icon -->
+      <svg class="about-icon" viewBox="0 0 52 52" fill="none">
+        <rect width="52" height="52" rx="14" fill="#F0FDFA"/>
+        <rect x="8" y="14" width="36" height="26" rx="6" stroke="#0F766E" stroke-width="2" fill="none"/>
+        <rect x="8" y="14" width="36" height="9" rx="6 6 0 0" fill="#0F766E" opacity=".18"/>
+        <circle cx="15" cy="18.5" r="2" fill="#F472B6"/>
+        <circle cx="21" cy="18.5" r="2" fill="#818CF8"/>
+        <circle cx="27" cy="18.5" r="2" fill="#14B8A6"/>
+        <path d="M14 30 L19 33 L14 36" stroke="#0F766E" stroke-width="2" stroke-linejoin="round" fill="none"/>
+        <line x1="22" y1="36" x2="32" y2="36" stroke="#14B8A6" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <div class="about-name">Becky</div>
+      <div class="about-role">// backend · system architecture</div>
+      <p class="about-quote">後端穩，架構清，部署完才能睡著。資料庫裡藏著她的靈魂。系統沒 crash，她才有笑容。</p>
+      <div class="chips">
+        <span class="chip chip-green">Node.js</span>
+        <span class="chip chip-green">Python</span>
+        <span class="chip chip-green">PostgreSQL</span>
+        <span class="chip chip-green">AWS</span>
+        <span class="chip chip-green">Docker</span>
+        <span class="chip chip-green">REST API</span>
+      </div>
+    </div>
+
+    <div class="about-card amy">
+      <!-- Pen icon -->
+      <svg class="about-icon" viewBox="0 0 52 52" fill="none">
+        <rect width="52" height="52" rx="14" fill="#EEF2FF"/>
+        <path d="M34 12 L40 18 L20 38 L12 40 L14 32 L34 12Z" stroke="#4338CA" stroke-width="2" stroke-linejoin="round" fill="#C7D2FE"/>
+        <path d="M28 18 L34 24" stroke="#4338CA" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="12.5" cy="39.5" r="2" fill="#4338CA"/>
+      </svg>
+      <div class="about-name">Amy</div>
+      <div class="about-role">// frontend · ui/ux design</div>
+      <p class="about-quote">設計是她的語言，像素是她的積木。UI 沒好看就是沒完成。品味很挑，但就是這樣才讓作品發光。</p>
+      <div class="chips">
+        <span class="chip chip-purple">Figma</span>
+        <span class="chip chip-purple">React</span>
+        <span class="chip chip-purple">Next.js</span>
+        <span class="chip chip-purple">Tailwind</span>
+        <span class="chip chip-purple">UI Design</span>
+        <span class="chip chip-purple">Framer Motion</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ── 03 Services ── -->
+<section id="services">
+  <div class="section-label">— What we do</div>
+  <h2 class="section-title">你說需求，<br>我們出手。</h2>
+  <div class="services-grid">
+
+    <div class="service-card">
+      <div class="service-icon si-purple">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="4" width="20" height="16" rx="3" stroke="currentColor" stroke-width="1.8"/>
+          <line x1="2" y1="9" x2="22" y2="9" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="5.5" cy="6.5" r="1.2" fill="currentColor"/>
+          <circle cx="9"   cy="6.5" r="1.2" fill="currentColor"/>
+          <rect x="5" y="12" width="6"  height="1.5" rx=".75" fill="currentColor" opacity=".6"/>
+          <rect x="5" y="15" width="10" height="1.5" rx=".75" fill="currentColor" opacity=".4"/>
+          <rect x="14" y="12" width="4" height="4"   rx="1"   fill="currentColor" opacity=".3"/>
+        </svg>
+      </div>
+      <div class="service-title">網站開發</div>
+      <div class="service-tagline">// web development</div>
+      <p class="service-desc">響應式、快速、好看。從 Landing Page 到複雜 Web App，設計稿到上線一氣呵成。</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon si-green">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <rect x="6" y="2" width="12" height="20" rx="3" stroke="currentColor" stroke-width="1.8"/>
+          <line x1="6" y1="17" x2="18" y2="17" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="12" cy="19.5" r="1" fill="currentColor"/>
+          <rect x="9" y="6"  width="6" height="1.5" rx=".75" fill="currentColor" opacity=".5"/>
+          <rect x="9" y="9"  width="6" height="1.5" rx=".75" fill="currentColor" opacity=".5"/>
+          <rect x="9" y="12" width="4" height="1.5" rx=".75" fill="currentColor" opacity=".5"/>
+        </svg>
+      </div>
+      <div class="service-title">App 開發</div>
+      <div class="service-tagline">// ios · android</div>
+      <p class="service-desc">iOS、Android，一套搞定。React Native 跨平台，你說你要哪種我們都 OK。</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon si-pink">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="3"   fill="currentColor"/>
+          <circle cx="4"  cy="6"  r="2"   stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="20" cy="6"  r="2"   stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="4"  cy="18" r="2"   stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="20" cy="18" r="2"   stroke="currentColor" stroke-width="1.6"/>
+          <line x1="6"  y1="7"  x2="9.5"  y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="18" y1="7"  x2="14.5" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="6"  y1="17" x2="9.5"  y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="18" y1="17" x2="14.5" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="service-title">API 設計</div>
+      <div class="service-tagline">// backend · integration</div>
+      <p class="service-desc">前後端溝通，我們當翻譯。RESTful、GraphQL、Webhook，規格清楚、文件齊全。</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon si-purple">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2 L22 9 L18 22 H6 L2 9 Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <line x1="2" y1="9" x2="22" y2="9" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M12 22 L7.5 9 L12 2 L16.5 9 L12 22Z" stroke="currentColor" stroke-width="1.1" opacity=".45" fill="none"/>
+        </svg>
+      </div>
+      <div class="service-title">UI/UX 設計</div>
+      <div class="service-tagline">// design · prototype</div>
+      <p class="service-desc">好看又好用，才算做完。從使用者流程到 Figma 高保真稿，挑剔但值得。</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon si-green">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 15 H19 C21 15 22.5 13.5 22.5 11.5 S21 8 19 8 C19 5.5 17 3 14 3 C11.8 3 10 4.3 9.1 6.2 C7.8 5.8 6 6.6 6 9 C4.8 9.2 3 10.5 3 12.5 C3 14.2 4.5 15 6 15 H8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="12" y1="12" x2="12" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <polyline points="9,18 12,21 15,18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="service-title">雲端部署</div>
+      <div class="service-tagline">// devops · hosting</div>
+      <p class="service-desc">上線之後，還是我們顧。CI/CD、監控、備份，讓你睡得著覺。</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon si-pink">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M12 2.5 C12 2.5 8.5 7 8.5 12 C8.5 17 12 21.5 12 21.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M12 2.5 C12 2.5 15.5 7 15.5 12 C15.5 17 12 21.5 12 21.5" stroke="currentColor" stroke-width="1.4"/>
+          <line x1="2.5"  y1="12" x2="21.5" y2="12" stroke="currentColor" stroke-width="1.4"/>
+          <line x1="4"    y1="7.5" x2="20"   y2="7.5" stroke="currentColor" stroke-width="1" opacity=".55"/>
+          <line x1="4"    y1="16.5" x2="20"  y2="16.5" stroke="currentColor" stroke-width="1" opacity=".55"/>
+        </svg>
+      </div>
+      <div class="service-title">雙語支援</div>
+      <div class="service-tagline">// i18n · zh / en</div>
+      <p class="service-desc">中文聊、英文交，跨時區沒問題。多語系架構、SEO 友善，全球都能用。</p>
+    </div>
+
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ── 04 Works ── -->
+<section id="works">
+  <div class="section-label">— Portfolio</div>
+  <h2 class="section-title">做過的，<br>都在這裡。</h2>
+  <div class="works-filters">
+    <button class="filter-btn active" data-filter="all">全部</button>
+    <button class="filter-btn" data-filter="web">網頁</button>
+    <button class="filter-btn" data-filter="app">App</button>
+    <button class="filter-btn" data-filter="design">設計</button>
+  </div>
+  <div class="works-grid">
+
+    <div class="work-card" data-cat="web">
+      <div class="work-card-bg" style="background:linear-gradient(140deg,#EEF2FF,#818CF8)">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" opacity=".25">
+          <rect x="10" y="18" width="60" height="48" rx="8" stroke="#4338CA" stroke-width="3"/>
+          <line x1="10" y1="30" x2="70" y2="30" stroke="#4338CA" stroke-width="2.5"/>
+          <circle cx="20" cy="24" r="3" fill="#4338CA"/>
+          <circle cx="30" cy="24" r="3" fill="#4338CA"/>
+          <rect x="16" y="37" width="22" height="3" rx="1.5" fill="#4338CA"/>
+          <rect x="16" y="44" width="36" height="3" rx="1.5" fill="#4338CA"/>
+          <rect x="16" y="51" width="28" height="3" rx="1.5" fill="#4338CA"/>
+          <rect x="42" y="37" width="20" height="20" rx="4" fill="#4338CA" opacity=".4"/>
+        </svg>
+      </div>
+      <span class="wip-badge">案例資料補充中</span>
+      <div class="work-overlay">
+        <div class="work-title">BrandKit Shop</div>
+        <div class="work-tags">
+          <span class="work-tag">Next.js</span><span class="work-tag">Stripe</span><span class="work-tag">Web</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="work-card" data-cat="app">
+      <div class="work-card-bg" style="background:linear-gradient(140deg,#F0FDFA,#14B8A6)">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" opacity=".25">
+          <rect x="24" y="8" width="32" height="56" rx="8" stroke="#0F766E" stroke-width="3"/>
+          <line x1="24" y1="52" x2="56" y2="52" stroke="#0F766E" stroke-width="2.5"/>
+          <circle cx="40" cy="58" r="3" fill="#0F766E"/>
+          <rect x="30" y="18" width="20" height="3" rx="1.5" fill="#0F766E"/>
+          <rect x="30" y="25" width="20" height="3" rx="1.5" fill="#0F766E"/>
+          <rect x="30" y="32" width="12" height="3" rx="1.5" fill="#0F766E"/>
+        </svg>
+      </div>
+      <span class="wip-badge">案例資料補充中</span>
+      <div class="work-overlay">
+        <div class="work-title">RunBuddy App</div>
+        <div class="work-tags">
+          <span class="work-tag">React Native</span><span class="work-tag">GPS</span><span class="work-tag">App</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="work-card" data-cat="design">
+      <div class="work-card-bg" style="background:linear-gradient(140deg,#FDF4FF,#F472B6)">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" opacity=".28">
+          <path d="M56 14 L66 24 L32 58 L18 62 L22 48 L56 14Z" stroke="#9D174D" stroke-width="3" stroke-linejoin="round" fill="#F472B6" opacity=".4"/>
+          <path d="M44 26 L54 36" stroke="#9D174D" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="wip-badge">案例資料補充中</span>
+      <div class="work-overlay">
+        <div class="work-title">Petal Studio 品牌</div>
+        <div class="work-tags">
+          <span class="work-tag">Figma</span><span class="work-tag">Brand</span><span class="work-tag">Design</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="work-card" data-cat="web">
+      <div class="work-card-bg" style="background:linear-gradient(140deg,#4338CA,#312E81)">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" opacity=".3">
+          <rect x="8"  y="10" width="64" height="60" rx="8" stroke="white" stroke-width="2.5"/>
+          <rect x="14" y="18" width="26" height="26" rx="4" stroke="white" stroke-width="2"/>
+          <rect x="46" y="18" width="20" height="10" rx="3" stroke="white" stroke-width="2"/>
+          <rect x="46" y="32" width="20" height="10" rx="3" stroke="white" stroke-width="2"/>
+          <rect x="14" y="50" width="52" height="6"  rx="3" fill="white" opacity=".4"/>
+        </svg>
+      </div>
+      <span class="wip-badge">案例資料補充中</span>
+      <div class="work-overlay">
+        <div class="work-title">NewsFlow Dashboard</div>
+        <div class="work-tags">
+          <span class="work-tag">React</span><span class="work-tag">WebSocket</span><span class="work-tag">Web</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="work-card" data-cat="app">
+      <div class="work-card-bg" style="background:linear-gradient(140deg,#0F766E,#134E4A)">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" opacity=".3">
+          <rect x="10" y="14" width="60" height="52" rx="8" stroke="white" stroke-width="2.5"/>
+          <line x1="10" y1="30" x2="70" y2="30" stroke="white" stroke-width="2"/>
+          <rect x="18" y="38" width="12" height="12" rx="3" fill="white" opacity=".5"/>
+          <rect x="34" y="38" width="12" height="12" rx="3" fill="white" opacity=".5"/>
+          <rect x="50" y="38" width="12" height="12" rx="3" fill="white" opacity=".5"/>
+          <rect x="18" y="54" width="44" height="4"  rx="2" fill="white" opacity=".35"/>
+        </svg>
+      </div>
+      <span class="wip-badge">案例資料補充中</span>
+      <div class="work-overlay">
+        <div class="work-title">TableBook 訂位</div>
+        <div class="work-tags">
+          <span class="work-tag">iOS</span><span class="work-tag">Node.js</span><span class="work-tag">App</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="work-card" data-cat="design">
+      <div class="work-card-bg" style="background:linear-gradient(140deg,#9D174D,#831843)">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" opacity=".3">
+          <path d="M40 12 L43 30 L62 33 L43 36 L40 54 L37 36 L18 33 L37 30 Z" stroke="white" stroke-width="2.5" fill="white" opacity=".4" stroke-linejoin="round"/>
+          <circle cx="40" cy="33" r="5" fill="white" opacity=".7"/>
+        </svg>
+      </div>
+      <span class="wip-badge">案例資料補充中</span>
+      <div class="work-overlay">
+        <div class="work-title">Lumie 美妝品牌</div>
+        <div class="work-tags">
+          <span class="work-tag">UI Design</span><span class="work-tag">Motion</span><span class="work-tag">Design</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ── 05 Tech Stack ── -->
+<section id="tech">
+  <div class="section-label">— Tech Stack</div>
+  <h2 class="section-title">工具很多，<br>但每個都用得好。</h2>
+  <div class="tech-categories">
+    <div class="tech-cat"><div class="tech-cat-label">前端 Frontend</div>
+      <div class="tech-tags">
+        <span class="tech-tag tt-purple">React</span><span class="tech-tag tt-purple">Next.js</span>
+        <span class="tech-tag tt-purple">TypeScript</span><span class="tech-tag tt-purple">Tailwind CSS</span>
+        <span class="tech-tag tt-purple">Framer Motion</span><span class="tech-tag tt-purple">Figma</span>
+      </div>
+    </div>
+    <div class="tech-cat"><div class="tech-cat-label">後端 Backend</div>
+      <div class="tech-tags">
+        <span class="tech-tag tt-green">Node.js</span><span class="tech-tag tt-green">Python</span>
+        <span class="tech-tag tt-green">FastAPI</span><span class="tech-tag tt-green">Express</span>
+        <span class="tech-tag tt-green">GraphQL</span><span class="tech-tag tt-green">REST API</span>
+      </div>
+    </div>
+    <div class="tech-cat"><div class="tech-cat-label">資料庫 Database</div>
+      <div class="tech-tags">
+        <span class="tech-tag tt-purple">PostgreSQL</span><span class="tech-tag tt-purple">MongoDB</span>
+        <span class="tech-tag tt-purple">Redis</span><span class="tech-tag tt-purple">Supabase</span>
+        <span class="tech-tag tt-purple">Prisma</span>
+      </div>
+    </div>
+    <div class="tech-cat"><div class="tech-cat-label">雲端 Cloud</div>
+      <div class="tech-tags">
+        <span class="tech-tag tt-green">AWS</span><span class="tech-tag tt-green">Vercel</span>
+        <span class="tech-tag tt-green">GCP</span><span class="tech-tag tt-green">Cloudflare</span>
+        <span class="tech-tag tt-green">Firebase</span>
+      </div>
+    </div>
+    <div class="tech-cat"><div class="tech-cat-label">架構 Architecture</div>
+      <div class="tech-tags">
+        <span class="tech-tag tt-pink">Docker</span><span class="tech-tag tt-pink">Kubernetes</span>
+        <span class="tech-tag tt-pink">CI/CD</span><span class="tech-tag tt-pink">Microservices</span>
+        <span class="tech-tag tt-pink">WebSocket</span>
+      </div>
+    </div>
+    <div class="tech-cat"><div class="tech-cat-label">工具 Tools</div>
+      <div class="tech-tags">
+        <span class="tech-tag tt-purple">Git</span><span class="tech-tag tt-purple">GitHub</span>
+        <span class="tech-tag tt-purple">Linear</span><span class="tech-tag tt-green">Notion</span>
+        <span class="tech-tag tt-green">Resend</span><span class="tech-tag tt-pink">Stripe</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ── 06 Contact ── -->
+<section id="contact">
+  <div class="section-label">— Get in touch</div>
+  <h2 class="section-title">有案子？有想法？<br>直接說！</h2>
+  <p class="section-sub">不用想太完整，我們一起把它想清楚。</p>
+  <div class="contact-inner">
+    <div class="contact-left">
+      <h3>來聊聊你的<br>下一個計畫</h3>
+      <p>不管是全新網站、App 改版、還是只有一個模糊的想法，都可以跟我們說。我們不會讓你等很久。</p>
+      <!-- Coffee mug SVG illustration -->
+      <div class="contact-illo">
+        <svg id="coffeeMug" width="160" height="170" viewBox="0 0 160 170" fill="none">
+          <!-- Steam -->
+          <path d="M52 58 Q46 42 52 26 Q58 10 52 0"  stroke="#818CF8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M80 54 Q74 38 80 22 Q86 6 80 0"    stroke="#818CF8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M108 58 Q102 42 108 26 Q114 10 108 0" stroke="#818CF8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- Mug body -->
+          <rect x="26" y="68" width="100" height="82" rx="14" fill="#EEF2FF"/>
+          <rect x="26" y="68" width="100" height="82" rx="14" stroke="#4338CA" stroke-width="2.5"/>
+          <!-- Liquid surface -->
+          <path d="M26 96 Q76 108 126 96" stroke="#818CF8" stroke-width="2" fill="none"/>
+          <rect x="26" y="96" width="100" height="54" rx="0 0 14 14" fill="#818CF8" opacity=".2"/>
+          <!-- Mug handle -->
+          <path d="M126 84 Q152 84 152 109 Q152 134 126 134" stroke="#4338CA" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <!-- Saucer -->
+          <rect x="14" y="152" width="124" height="8" rx="4" fill="#818CF8" opacity=".5"/>
+          <ellipse cx="76" cy="156" rx="70" ry="5" fill="#4338CA" opacity=".08"/>
+          <!-- Beamy wordmark on mug -->
+          <text x="76" y="90" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-weight="800" font-size="15" fill="#4338CA">beamy</text>
+        </svg>
+      </div>
+    </div>
+    <form class="contact-form" onsubmit="handleSubmit(event)">
+      <div class="form-group">
+        <label>你的名字 NAME</label>
+        <input type="text" placeholder="Becky 和 Amy 會記住你的">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label>需求描述 BRIEF</label>
+        <textarea placeholder="想做什麼？預算大概？什麼時候要上線？隨便說都可以"></textarea>
+      </div>
+      <button type="submit" class="btn-submit">送出 →</button>
+    </form>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo" id="footerLogo">Beamy<span>.</span></div>
+  <div class="footer-copy">© 2025 Beamy Studio · Becky & Amy</div>
+  <div class="footer-links">
+    <a href="#" title="即將補充">GitHub（即將）</a>
+    <a href="#" title="即將補充">Behance（即將）</a>
+    <a href="mailto:hello@beamy.studio">Email</a>
+  </div>
+</footer>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ── Cursor ── */
+const cursor     = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursor-ring');
+let mx = window.innerWidth/2, my = window.innerHeight/2;
+
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+gsap.ticker.add(() => {
+  gsap.set(cursor, { x: mx, y: my });
+  gsap.to(cursorRing, { x: mx, y: my, duration: .18, ease: 'power2.out' });
+});
+
+document.querySelectorAll('a, button, .service-card, .work-card, .about-card, .tech-tag, .filter-btn').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    gsap.to(cursor,     { scale: 1.6, background: '#9D174D', duration: .2 });
+    gsap.to(cursorRing, { scale: 1.5, borderColor: '#F472B6', duration: .2 });
+  });
+  el.addEventListener('mouseleave', () => {
+    gsap.to(cursor,     { scale: 1, background: '#4338CA', duration: .2 });
+    gsap.to(cursorRing, { scale: 1, borderColor: '#818CF8', duration: .2 });
+  });
+});
+
+/* ── Hero entrance ── */
+gsap.from('.hero-badge',        { opacity:0, y:20, duration:.6, delay:.1, ease:'power2.out' });
+gsap.from('h1',                 { opacity:0, y:30, duration:.7, delay:.25, ease:'power2.out' });
+gsap.from('.typing-wrap',       { opacity:0, y:20, duration:.6, delay:.4, ease:'power2.out' });
+gsap.from('.hero-btns',         { opacity:0, y:20, duration:.6, delay:.55, ease:'power2.out' });
+gsap.from('.hero-illustration', { opacity:0, x:40, duration:.8, delay:.3, ease:'power2.out' });
+
+/* ── Character float (Becky & Amy) ── */
+gsap.to('#charBecky', { y:-10, duration:2.8, ease:'sine.inOut', yoyo:true, repeat:-1 });
+gsap.to('#charAmy',   { y:-10, duration:2.8, ease:'sine.inOut', yoyo:true, repeat:-1, delay:1.3 });
+
+/* ── Coffee mug steam ── */
+gsap.to('#coffeeMug path', {
+  opacity: .3, duration: 1.6, ease:'sine.inOut', yoyo:true, repeat:-1, stagger:.25
+});
+
+/* ── Easter egg star spin ── */
+gsap.to('#eggStar', { rotation:360, duration:1.5, ease:'none', repeat:-1, transformOrigin:'50% 50%' });
+
+/* ── Scroll: generic fade-up ── */
+gsap.utils.toArray('.section-label, .section-title, .section-sub').forEach((el, i) => {
+  gsap.from(el, {
+    opacity:0, y:24, duration:.65, ease:'power2.out',
+    scrollTrigger: { trigger: el, start:'top 88%', toggleActions:'play none none none' }
+  });
+});
+
+/* ── Scroll: about cards ── */
+gsap.utils.toArray('.about-card').forEach((card, i) => {
+  gsap.from(card, {
+    opacity:0, y:32, duration:.7, ease:'power2.out', delay: i*.12,
+    scrollTrigger: { trigger:'.about-grid', start:'top 82%', toggleActions:'play none none none' }
+  });
+});
+
+/* ── Scroll: service cards stagger ── */
+gsap.from('.service-card', {
+  opacity:0, y:28, duration:.6, ease:'power2.out', stagger:.08,
+  scrollTrigger: { trigger:'.services-grid', start:'top 80%', toggleActions:'play none none none' }
+});
+
+/* ── Scroll: work cards ── */
+gsap.from('.work-card', {
+  opacity:0, y:28, scale:.97, duration:.6, ease:'power2.out', stagger:.07,
+  scrollTrigger: { trigger:'.works-grid', start:'top 82%', toggleActions:'play none none none' }
+});
+
+/* ── Scroll: tech categories ── */
+gsap.from('.tech-cat', {
+  opacity:0, y:20, duration:.55, ease:'power2.out', stagger:.1,
+  scrollTrigger: { trigger:'.tech-categories', start:'top 82%', toggleActions:'play none none none' }
+});
+
+/* ── Scroll: contact ── */
+gsap.from('.contact-inner', {
+  opacity:0, y:30, duration:.7, ease:'power2.out',
+  scrollTrigger: { trigger:'.contact-inner', start:'top 82%', toggleActions:'play none none none' }
+});
+
+/* ── Typing carousel ── */
+const phrases = ['變成真的。', '從設計到部署。', '一起搞定！', '發光上線。'];
+let pi = 0, ci = 0, deleting = false;
+const typingEl = document.getElementById('typing-text');
+function typeStep() {
+  const phrase = phrases[pi];
+  if (!deleting) {
+    typingEl.textContent = phrase.slice(0, ++ci);
+    if (ci === phrase.length) { deleting = true; setTimeout(typeStep, 1800); return; }
+    setTimeout(typeStep, 90);
+  } else {
+    typingEl.textContent = phrase.slice(0, --ci);
+    if (ci === 0) { deleting = false; pi = (pi+1) % phrases.length; setTimeout(typeStep, 350); return; }
+    setTimeout(typeStep, 45);
+  }
+}
+typeStep();
+
+/* ── Works filter ── */
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.work-card').forEach(card => {
+      const show = filter === 'all' || card.dataset.cat === filter;
+      gsap.to(card, { opacity: show?1:0, scale: show?1:.95, duration:.3,
+        onComplete: () => { card.style.display = show?'block':'none'; } });
+      if (show) card.style.display = 'block';
+    });
+  });
+});
+
+/* ── Tech tag star particles ── */
+document.querySelectorAll('.tech-tag').forEach(tag => {
+  tag.addEventListener('mouseenter', () => {
+    for (let i = 0; i < 4; i++) {
+      const s = document.createElement('span');
+      s.className = 'star-particle';
+      s.textContent = ['✦','★','✧','◆'][Math.floor(Math.random()*4)];
+      const sx = (Math.random()-.5)*48 + 'px';
+      const sy = -(Math.random()*28+10) + 'px';
+      s.style.cssText = `left:${Math.random()*80+10}%;top:0;--sx:${sx};--sy:${sy};`;
+      tag.appendChild(s);
+      s.addEventListener('animationend', () => s.remove());
+    }
+  });
+});
+
+/* ── Easter egg (logo click 5×) ── */
+let clicks = 0, clickTimer;
+function addEggTrigger(el) {
+  el.addEventListener('click', () => {
+    clearTimeout(clickTimer);
+    clicks++;
+    clickTimer = setTimeout(() => { clicks = 0; }, 2000);
+    if (clicks >= 5) { clicks = 0; document.getElementById('easterEgg').classList.add('active'); }
+  });
+}
+addEggTrigger(document.getElementById('navLogo'));
+addEggTrigger(document.getElementById('footerLogo'));
+function closeEgg() { document.getElementById('easterEgg').classList.remove('active'); }
+
+/* ── Contact form ── */
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.btn-submit');
+  btn.textContent = '✓ 收到了，我們會盡快聯絡你！';
+  btn.style.background = 'var(--green-dark)';
+  btn.disabled = true;
+}
+</script>
+</body>
+</html>
